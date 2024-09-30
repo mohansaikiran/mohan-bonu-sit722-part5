@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: book-catalog
-          image: $REGISTRY_HOSTNAME/book_catalog:$VERSION
+          image: $REGISTRY_HOSTNAME/book_catalog_img:$VERSION
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
         - name: inventory-management
-          image: $REGISTRY_HOSTNAME/inventory:$VERSION
+          image: $REGISTRY_HOSTNAME/book_inventory_img:$VERSION
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8001
