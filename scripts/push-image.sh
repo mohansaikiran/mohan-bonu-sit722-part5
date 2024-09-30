@@ -8,6 +8,6 @@ set -u # or set -o nounset
 
 echo $REGISTRY_PW | docker login $REGISTRY_HOSTNAME --username $REGISTRY_UN --password-stdin
 
-docker push $REGISTRY_HOSTNAME/book_catalog:$VERSION
+docker push $REGISTRY_HOSTNAME/book_catalog_img:$VERSION
 
-docker push $REGISTRY_HOSTNAME/inventory:$VERSION
+docker push $REGISTRY_HOSTNAME/book_inventory_img:$VERSION
