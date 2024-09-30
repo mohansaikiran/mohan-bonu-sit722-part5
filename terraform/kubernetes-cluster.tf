@@ -25,3 +25,9 @@ resource "azurerm_role_assignment" "role_assignment" {
   scope                            = azurerm_container_registry.container_registry.id
   skip_service_principal_aad_check = true
 }
+
+resource "local_file" "kubeconfig" {
+  depends_on   = [azurerm_kubernetes_cluster.sit722k8s]
+  filename     = ".kubeconfig"
+  content      = azurerm_kubernetes_cluster.sit722k8s.kube_config_raw
+}
