@@ -1,0 +1,61 @@
+name: Deploy microservice
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      VERSION: ${{ github.sha }}
+
+    steps:
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+
+      - uses: actions/checkout@v3
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: ./terraform
+
+      - name: Set environment variables from Terraform outputs
+        id: set_env
+        run: |
+          echo "REGISTRY_HOSTNAME=$(terraform output -raw registry_hostname)" >> $GITHUB_ENV
+          echo "REGISTRY_UN=$(terraform output -raw registry_un)" >> $GITHUB_ENV
+          echo "REGISTRY_PW=$(terraform output -raw registry_pw)" >> $GITHUB_ENV
+        working-directory: ./terraform
+
+      - name: Setting permissions for build script
+        run: chmod +x ./scripts/build-image.sh
+
+      - name: Build
+        run: ./scripts/build-image.sh
+
+      - name: Setting permissions for push script
+        run: chmod +x ./scripts/push-image.sh
+
+      - name: Publish
+        run: ./scripts/push-image.sh
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Setting permissions for deploy script
+        run: chmod +x ./scripts/deploy.sh
+
+      - name: Deploy
+        run: ./scripts/deploy.sh

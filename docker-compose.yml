@@ -1,0 +1,24 @@
+# Your Solution
+
+services:
+  book_catalog:
+    image: "${REGISTRY_HOSTNAME}/book_catalog_img:${VERSION}"
+    build:
+      context: ./book_catalog
+      dockerfile: Dockerfile
+    container_name: book_catalog
+    ports:
+      - "8000:8000" 
+    environment:
+      - DATABASE_URL=postgresql://lastdb_user:jszlx4O0VXjXxqhCMsPuulDJncvg0aNr@dpg-crsvqbt2ng1s73bs9tp0-a.oregon-postgres.render.com/lastdb
+
+  inventory_management:
+    image: "${REGISTRY_HOSTNAME}/book_inventory_img:${VERSION}"
+    build:
+      context: ./inventory_management
+      dockerfile: Dockerfile
+    container_name: book_inventory
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql://lastdb_user:jszlx4O0VXjXxqhCMsPuulDJncvg0aNr@dpg-crsvqbt2ng1s73bs9tp0-a.oregon-postgres.render.com/lastdb
